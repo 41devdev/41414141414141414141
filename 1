@@ -1,0 +1,234 @@
+local MAIN_SCRIPT_URL = "https://pastebin.com/raw/9v5NHSay"
+
+-- 🔥 Direct script_key bypass
+if getgenv and getgenv().script_key then
+    local userKey = tostring(getgenv().script_key)
+    local ok, msg = validateKey(game.Players.LocalPlayer.Name, userKey)
+    if ok then
+        loadstring(game:HttpGet(MAIN_SCRIPT_URL))()
+        return
+    else
+        warn("Invalid script_key: "..tostring(msg))
+    end
+end
+
+-- ✅ Discord webhook (logs in English)
+local WebhookURL = "https://discord.com/api/webhooks/1408860833240449155/4VSN6g4XeRN6kePGaiJYGBM4EA6vvnyVHbDprxNpZCrcEUFPRYCvmA7D2fUSo-db-VHx"
+local KeyDuration = 15 * 60 * 60 -- 15 hours
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local HttpService = game:GetService("HttpService")
+local player = Players.LocalPlayer
+local UserName = player.Name
+
+-- ✅ Webhook bildirimi (script executed log)
+local function sendExecutionWebhook(key, user)
+    local data = {
+        ["content"] = "**Script Executed**",
+        ["embeds"] = {{
+            ["title"] = "Execution Log",
+            ["color"] = 65280, -- yeşil
+            ["fields"] = {
+                { ["name"] = "Key", ["value"] = key, ["inline"] = false },
+                { ["name"] = "User", ["value"] = user, ["inline"] = false }
+            }
+        }}
+    }
+
+    local jsonData = HttpService:JSONEncode(data)
+
+    pcall(function()
+        http_request({
+            Url = "https://discord.com/api/webhooks/1413240456107786361/qeQLg0IpSC0UAplMi9QLkOFDPggnaqN91SMzuLZgxH8ifjWsQNN1gvrn12B5zkOPdOFZ",
+            Method = "POST",
+            Headers = { ["Content-Type"] = "application/json" },
+            Body = jsonData
+        })
+    end)
+end
+
+-- 🔔 Toast
+local function showToast(screenGui, msg, color)
+    color = color or Color3.fromRGB(45,45,45)
+    local Note = Instance.new("TextLabel")
+    Note.AnchorPoint = Vector2.new(1,1)
+    Note.Size = UDim2.new(0, 260, 0, 42)
+    Note.Position = UDim2.new(1, -12, 1, 60)
+    Note.BackgroundColor3 = color
+    Note.BorderSizePixel = 0
+    Note.TextColor3 = Color3.new(1,1,1)
+    Note.Font = Enum.Font.GothamSemibold
+    Note.TextSize = 16
+    Note.Text = "  " .. msg
+    Note.TextXAlignment = Enum.TextXAlignment.Left
+    Note.Parent = screenGui
+    Instance.new("UICorner", Note).CornerRadius = UDim.new(0,10)
+    TweenService:Create(Note, TweenInfo.new(0.25), {Position = UDim2.new(1,-12,1,-12)}):Play()
+    task.delay(2,function()
+        local t = TweenService:Create(Note, TweenInfo.new(0.25), {Position = UDim2.new(1,-12,1,60)})
+        t:Play() t.Completed:Wait() Note:Destroy()
+    end)
+end
+
+-- 🔑 Key doğrulama
+local CH = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+local function base36ToDec(str)
+    local n=0
+    for i=1,#str do
+        local c=string.sub(str,i,i)
+        local v=string.find(CH,c)-1
+        n=n*36+v
+    end
+    return n
+end
+local function base36Pad(n,len)
+    local out={}
+    for i=1,len do
+        local digit=n%36
+        out[len-i+1]=string.sub(CH,digit+1,digit+1)
+        n=math.floor(n/36)
+    end
+    return table.concat(out)
+end
+local function checksumBlock(username,head8)
+    username=username:upper()
+    head8=head8:upper()
+    local s=username..head8
+    local total=0
+    local MOD=36^4
+    for i=1,#s do total=(total+string.byte(s,i))%MOD end
+    return base36Pad(total,4)
+end
+local function validateKey(username,key)
+    local a,b,c,d=string.match((key or ""):upper(),"^(%w%w%w%w)%-(%w%w%w%w)%-(%w%w%w%w)%-(%w%w%w%w%w%w)$")
+    if not a then return false,"Format error" end
+    local chk=checksumBlock(username,a..b)
+    if chk~=c then return false,"Checksum mismatch" end
+    local expireAt=base36ToDec(d)
+    if os.time()>expireAt then return false,"Expired" end
+    return true,"OK"
+end
+
+-- 📊 GUI
+local ScreenGui=Instance.new("ScreenGui",player:WaitForChild("PlayerGui"))
+ScreenGui.ResetOnSpawn=false
+
+local Main=Instance.new("Frame",ScreenGui)
+Main.Size=UDim2.new(0,420,0,240)
+Main.Position=UDim2.new(0.5,-210,0.5,-120)
+Main.BackgroundColor3=Color3.fromRGB(20,20,20)
+Instance.new("UICorner",Main).CornerRadius=UDim.new(0,14)
+
+local Title=Instance.new("TextLabel",Main)
+Title.Size=UDim2.new(1,0,0,54)
+Title.BackgroundTransparency=1
+Title.Text="🔑 41Hub Key System"
+Title.TextColor3=Color3.new(1,1,1)
+Title.Font=Enum.Font.GothamBold
+Title.TextSize=22
+
+local KeyBox=Instance.new("TextBox",Main)
+KeyBox.Size=UDim2.new(0,320,0,44)
+KeyBox.Position=UDim2.new(0.5,-160,0,74)
+KeyBox.PlaceholderText="Enter your key"
+KeyBox.Text=""
+KeyBox.TextSize=18
+KeyBox.Font=Enum.Font.Gotham
+KeyBox.BackgroundColor3=Color3.fromRGB(35,35,35)
+KeyBox.TextColor3=Color3.new(1,1,1)
+Instance.new("UICorner",KeyBox).CornerRadius=UDim.new(0,10)
+
+local ButtonFrame=Instance.new("Frame",Main)
+ButtonFrame.Size=UDim2.new(1,-40,0,54)
+ButtonFrame.Position=UDim2.new(0,20,0,150)
+ButtonFrame.BackgroundTransparency=1
+local UIList=Instance.new("UIListLayout",ButtonFrame)
+UIList.FillDirection=Enum.FillDirection.Horizontal
+UIList.Padding=UDim.new(0,20)
+UIList.HorizontalAlignment=Enum.HorizontalAlignment.Center
+
+local GetButton=Instance.new("TextButton",ButtonFrame)
+GetButton.Size=UDim2.new(0.5,-10,1,0)
+GetButton.Text="Get Key"
+GetButton.Font=Enum.Font.GothamBold
+GetButton.TextSize=18
+GetButton.TextColor3=Color3.new(1,1,1)
+GetButton.BackgroundColor3=Color3.fromRGB(40,40,40)
+Instance.new("UICorner",GetButton).CornerRadius=UDim.new(0,10)
+
+local ConfirmButton=Instance.new("TextButton",ButtonFrame)
+ConfirmButton.Size=UDim2.new(0.5,-10,1,0)
+ConfirmButton.Text="Redeem Key"
+ConfirmButton.Font=Enum.Font.GothamBold
+ConfirmButton.TextSize=18
+ConfirmButton.TextColor3=Color3.new(1,1,1)
+ConfirmButton.BackgroundColor3=Color3.fromRGB(0,120,215)
+Instance.new("UICorner",ConfirmButton).CornerRadius=UDim.new(0,10)
+
+-- 📌 Actions
+GetButton.MouseButton1Click:Connect(function()
+    setclipboard("https://lootdest.org/s?juvwkAsC")
+    showToast(ScreenGui,"Copied to clipboard!",Color3.fromRGB(45,45,45))
+end)
+
+ConfirmButton.MouseButton1Click:Connect(function()
+    local enteredKey=KeyBox.Text:upper()
+    local ok,reason=validateKey(UserName,enteredKey)
+    if not ok then
+        showToast(ScreenGui,"Invalid key ("..reason..")",Color3.fromRGB(200,65,65))
+        return
+    end
+
+    -- 🔎 Disabled keys kontrolü (ilk doğrulama)
+    local success,disabledData = pcall(function()
+        return game:HttpGet("https://pastebin.com/raw/RtFcPzFU?nocache="..tostring(os.time()))
+    end)
+
+    if success and disabledData then
+        local decoded
+        local ok2,err = pcall(function()
+            decoded = HttpService:JSONDecode(disabledData)
+        end)
+
+        if ok2 and decoded and decoded.disabled then
+            for _,k in ipairs(decoded.disabled) do
+                if k == enteredKey then
+                    showToast(ScreenGui,"This key has been disabled!",Color3.fromRGB(200,65,65))
+                    player:Kick("key deleted By Nomiras fucking nigger")
+                    return
+                end
+            end
+        end
+    end
+
+    -- ✅ Eğer devre dışı değilse normal yükleme
+    showToast(ScreenGui,"Script loading…",Color3.fromRGB(0,120,215))
+
+    -- ⏱️ Her 1 dakikada bir tekrar kontrol et
+    task.spawn(function()
+        while task.wait(60) do
+            local ok3,res = pcall(function()
+                return game:HttpGet("https://pastebin.com/raw/RtFcPzFU?nocache="..tostring(os.time()))
+            end)
+            if ok3 and res then
+                local decoded
+                pcall(function() decoded = HttpService:JSONDecode(res) end)
+                if decoded and decoded.disabled then
+                    for _,k in ipairs(decoded.disabled) do
+                        if k == enteredKey then
+                            player:Kick("key deleted By Nomiras fucking nigger")
+                            return
+                        end
+                    end
+                end
+            end
+        end
+    end)
+
+    task.delay(0.4,function()
+        ScreenGui:Destroy()
+        sendExecutionWebhook(enteredKey, UserName) -- 🔔 Bildirim gönder
+        loadstring(game:HttpGet("https://pastebin.com/raw/9v5NHSay"))()
+    end)
+end)
