@@ -7,19 +7,17 @@ getgenv().loaded = true
 local StarterGui = game:GetService("StarterGui")
 
 StarterGui:SetCore("SendNotification", {
-    Title = "4️⃣1️⃣🇭🇺🇧.𝐂𝐂",
-    Text = "4️⃣1️⃣ Loading...",
-    Duration = 13, -- seconds the notification stays on screen
-    Button1 = "4️⃣1️⃣"
+    Title = "4️⃣1️⃣Hub.cc",
+    Text = " Loading... ",
+    Duration = 15, -- seconds the notification stays on screen
 })
 
 
 task.wait(8)
 StarterGui:SetCore("SendNotification", {
-    Title = "4️⃣1️⃣🇭🇺🇧.𝐂𝐂",
-    Text = "4️⃣1️⃣ Almost There...",
+    Title = "4️⃣1️⃣Hub.cc",
+    Text = " Almost There...",
     Duration = 15, -- seconds the notification stays on screen
-    Button1 = "4️⃣1️⃣"
 })
 
 if LPH_OBFUSCATED == nil then
@@ -16003,6 +16001,7 @@ if hookfunction and not Solara and LPH_OBFUSCATED and Game_Name == "South Bronx"
         return _FireServer(self, ...)
     end)
 end
+
 
 
 
