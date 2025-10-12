@@ -269,19 +269,18 @@ local Config = {
 
        ["TeleportationList"] = {
             ["Deli Market 🥪"] = CFrame.new(-735.50, 254.69, -686.72);
-            ["Capital One Bank 🏦"] = CFrame.new(-205, 284, -1214);
+            ["Bank 🏦"] = CFrame.new(-225.64, 283.81, -1214.61);
             ["Ice Box 🧊"] = CFrame.new(-198.8927001953125, 283.8486633300781, -1170.4500732421875);
-            ["Dupe Safe 🔒"] = CFrame.new(68519.52, 52941.68, -792.38);
+            ["Safe 🔒"] = CFrame.new(68519.52, 52941.68, -792.38);
             ["Hotel 🏨"] = CFrame.new(-1012, 266, -933);
             ["Drip Store 👓"] = CFrame.new(67462.6953125, 10489.0322265625, 546.6762084960938);
-            ["Car Dealer 🚗"] = CFrame.new(-378.6668701171875, 253.2564697265625, -1245.4259033203125);
+            ["Car Dealer 🚗"] = CFrame.new(-407.01, 253.41, -1243.18);
             ["Laundromat 💷"] = CFrame.new(-979.4635620117188, 253.65318298339844, -689.3339233398438);
             ["Studio 🎙"] = CFrame.new(93408.453125, 14484.7158203125, 570.139404296875);
-            ["Basketball Court 🏀"] = CFrame.new(-1055.6407470703125, 253.51364135742188, -497.10528564453125);
+            ["Night Club 🥂"] = CFrame.new(-90.03, 283.75, -728.01);
             ["Robbable Ice Box 🧊"] = CFrame.new(-209.68360900878906, 283.4959411621094, -1265.5286865234375);
-            ["Exotic Dealer / Grass House 🍃"] = CFrame.new(-1521.943115234375, 272.5462646484375, -984.3020629882812);
-            ["Safe 🔒"] = CFrame.new(-190, 295, -1010);
-            ["Roof Top / Bank Tools 🛠"] = CFrame.new(-385, 340, -557);
+            ["Exotic Shop 🍃"] = CFrame.new(-1521.943115234375, 272.5462646484375, -984.3020629882812);
+            ["Bronx Market 💲"] = CFrame.new(-402.34, 334.31, -556.81);
             ["Gun Shop 🔫"] = CFrame.new(92970.4140625, 122097.953125, 17023.623046875);
             ["Second Gun Shop 🔫"] = CFrame.new(66202, 123615.7109375, 5749.81689453125);
             ["Exotic Guns 🔫"] = CFrame.new(60829.00, 87609.32, -352.87);
@@ -293,17 +292,18 @@ local Config = {
             ["Margreens 💊 "] = CFrame.new(-345.25, 254.45, -392.41);
             ["Old PentHouse 🏡 "] = CFrame.new(-597.20, 356.55, -688.55);
             ["PentHouse 🌇 "] = CFrame.new(-130.14, 397.14, -564.70);
-            ["Soda Cook 🏭"] = CFrame.new(-176.92, 284.63, -290.31);
-            ["Soda Cook 2 🏭"] = CFrame.new(-714.30, 253.92, -233.78);
+            ["Old WareHouse 🏭"] = CFrame.new(-176.92, 284.63, -290.31);
+            ["New WareHouse 🏭"] = CFrame.new(-108.66, 283.81, -409.45);
             ["Sell Soda 💲"] = CFrame.new(-1290.79, 253.30, -3004.93);
             ["Striker Man 🚙"] = CFrame.new(-1424.99, 254.22, 2786.90);
-            ["BookBags 🎒"] = CFrame.new(-674.25, 253.78, -683.07);
+            ["BookBags 🎒"] = CFrame.new(-693.79, 253.78, -681.57);
             ["Prison ⛓️"] = CFrame.new(-1120.29, 254.90, -3364.86);
             ["NYPD Roof 👮"] = CFrame.new(-1389.98, 279.44, -3141.37);
             ["Mansion  🏤🩸"] = CFrame.new(-792.72, 253.31, 1400.73);
             ["SledgeHammer Job 🔨"] = CFrame.new(-1007.64, 262.26, 56.05);
             ["Bury Money ⚰️"] = CFrame.new(-198.53, 239.51, 1266.04);
             ["McDonalds 🍔"] = CFrame.new(-1011.34, 253.93, -1147.76);
+            ["Popeyes 🍗"] = CFrame.new(-78.04, 283.63, -768.11);
         };
 
         ["Modifications"] = newproxy(true);
@@ -14484,7 +14484,7 @@ if Game_Name == "The Bronx" then
                     repeat task.wait()
                     until LocalPlayer.Backpack:FindFirstChild("BagOfMoney")
         
-                    Teleport(CFrame.new(-203, 284, -1201))
+                    Teleport(CFrame.new(-222.29, 283.81, -1200.90))
         
                     task.wait(0.4)
         
@@ -16001,7 +16001,6 @@ if hookfunction and not Solara and LPH_OBFUSCATED and Game_Name == "South Bronx"
         return _FireServer(self, ...)
     end)
 end
-
 
 
 
