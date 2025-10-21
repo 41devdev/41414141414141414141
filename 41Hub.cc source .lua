@@ -5337,7 +5337,7 @@ do
                 
                 for Index, Value in workspace["1# Map"]["2 Crosswalks"].Safes:GetChildren() do
                     if Value:IsA("Model") and Value.Name == "Safe" then
-                        if Value.WorldPivot == CFrame.new(-215.944153, 292.669647, -1034.16846, 0, 0, -1, -1, 0, 0, 0, 1, 0) then
+                        if Value.WorldPivot == CFrame.new(-652.037292, 254.108459, -471.539886, 5.24520874e-06, -1, 5.24520874e-06, 8.10623169e-05, -5.24520874e-06, -1, 1, 5.24520874e-06, 8.10623169e-05) then
                             Safe = Value
                             break
                         end
