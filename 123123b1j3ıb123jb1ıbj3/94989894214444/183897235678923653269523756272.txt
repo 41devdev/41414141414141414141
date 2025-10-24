@@ -7,15 +7,15 @@ getgenv().loaded = true
 local StarterGui = game:GetService("StarterGui")
 
 StarterGui:SetCore("SendNotification", {
-    Title = "4️⃣1️⃣Hub.cc",
+    Title = "Aethra",
     Text = " Loading... ",
     Duration = 15, -- seconds the notification stays on screen
 })
 
 
-task.wait(8)
+task.wait(12)
 StarterGui:SetCore("SendNotification", {
-    Title = "4️⃣1️⃣Hub.cc",
+    Title = "Aethra",
     Text = " Almost There...",
     Duration = 15, -- seconds the notification stays on screen
 })
@@ -75,7 +75,7 @@ if LPH_OBFUSCATED == nil then
     end
     LRM_IsUserPremium = false
     LRM_LinkedDiscordID = "0"
-    LRM_ScriptName = "41hub.cc"
+    LRM_ScriptName = "Aethra"
     LRM_TotalExecutions = 0
     LRM_SecondsLeft = math.huge
     LRM_UserNote = "Developer";
@@ -225,7 +225,7 @@ if LPH_OBFUSCATED then
 end
 
 if script_key then
-    writefile("41Hubcc_Key.txt", script_key)
+    writefile("Aethra_Key.txt", script_key)
 end
 
 do 
@@ -257,7 +257,7 @@ local FireServer, InvokeServer, UnreliableFireServer = Instance.new("RemoteEvent
 
 if isfunctionhooked then
     if isfunctionhooked(FireServer) or isfunctionhooked(UnreliableFireServer) or isfunctionhooked(InvokeServer) and LPH_OBFUSCATED then
-        return Services.LocalPlayer:Kick("41hub.cc | Security : You are running another script, please disable it and execute again")
+        return Services.LocalPlayer:Kick("Aethra | Security : You are running another script, please disable it and execute again")
     end
 end
 
@@ -770,7 +770,7 @@ local Config = {
 end]]
 
 getgenv().library = {
-    directory = "41hub.cc_remastered",
+    directory = "Aethra_remastered",
     folders = {
         "/fonts",
         "/configs",
@@ -2971,11 +2971,11 @@ do
                 frame.Parent = getgenv().HideScreenGUI
             
                 local textLabel = Instance.new("TextLabel")
-                textLabel.Name = "\nhideui41hubcc"
+                textLabel.Name = "\nhideuiaethra"
                 textLabel.Size = UDim2.new(0, 400, 0, 100)
                 textLabel.Font = Enum.Font.SourceSansBold
                 textLabel.RichText = true
-                textLabel.Text = '<font color="rgb(0,163,224)">41Hub</font>cc\n' .. Title
+                textLabel.Text = '<font color="rgb(255,165,0)">Aethra</font>🎃\n' .. Title
                 textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
                 textLabel.BackgroundTransparency = 1
                 textLabel.TextSize = 36
@@ -2995,7 +2995,7 @@ do
                             local timeLeft = endTime - tick()
 
                             textLabel.Text = string.format(
-                                '<font color="rgb(0,163,224)">41Hub.</font>cc\n%s\nplease wait : <font color="rgb(0,163,224)">%.2f</font> seconds',
+                                '<font color="rgb(255,165,0)">Aethra.</font>🎃\n%s\nplease wait : <font color="rgb(255,165,0)">%.2f</font> seconds',
                                 Title, math.max(timeLeft, 0)
                             )
 
@@ -3107,7 +3107,7 @@ do
                         task.wait()
                         if Bike == nil then
                             library.notifications:create_notification({
-                                name = "41hub.cc",
+                                name = "Aethra",
                                 info = `Your bike was not found!`,
                                 lifetime = 5
                             })
@@ -3130,7 +3130,7 @@ do
                         task.wait()
                         if Bike == nil then
                             library.notifications:create_notification({
-                                name = "41hub.cc",
+                                name = "Aethra",
                                 info = `Your bike was not found!`,
                                 lifetime = 5
                             })
@@ -5266,11 +5266,11 @@ do
                 frame.Parent = getgenv().HideScreenGUI
             
                 local textLabel = Instance.new("TextLabel")
-                textLabel.Name = "\nhideui41hubcc"
+                textLabel.Name = "\nhideuiaethra"
                 textLabel.Size = UDim2.new(0, 400, 0, 100)
                 textLabel.Font = Enum.Font.SourceSansBold
                 textLabel.RichText = true
-                textLabel.Text = '<font color="rgb(0,163,224)">41Hub.</font>cc\n' .. Title
+                textLabel.Text = '<font color="rgb(255,165,0)">Aethra</font>🎃\n' .. Title
                 textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
                 textLabel.BackgroundTransparency = 1
                 textLabel.TextSize = 36
@@ -5290,7 +5290,7 @@ do
                             local timeLeft = endTime - tick()
 
                             textLabel.Text = string.format(
-                                '<font color="rgb(0,163,224)">41Hub.</font>cc\n%s\nplease wait : <font color="rgb(0,163,224)">%.2f</font> seconds',
+                                '<font color="rgb(255,165,0)">Aethra</font> 🎃\n%s\nplease wait : <font color="rgb(255,165,0)">%.2f</font> seconds',
                                 Title, math.max(timeLeft, 0)
                             )
 
@@ -6262,7 +6262,7 @@ if not Mobile then
 -- Library init
     local themes = {
         preset = {
-            accent = rgb(0, 162, 255),
+            accent = rgb(255,165,0),
         }, 
 
         utility = {
@@ -9888,7 +9888,7 @@ if not Mobile then
         
                 if Server.id == game.JobId then
                     library.notifications:create_notification({
-                        name = "41hub.cc",
+                        name = "Aethra",
                         info = `You are currently in the smallest server!`,
                         lifetime = 10
                     })
@@ -13987,7 +13987,7 @@ if not Mobile then
     end
 -- \\ Script
 
-local window = library:window({name = "41Hub.", suffix = "cc", gameInfo = string.format("41Hub.cc : %s", Game_Name:lower())})
+local window = library:window({name = "Aethra", suffix = "🎃", gameInfo = string.format("Aethra : %s", Game_Name:lower())})
 
 if Game_Name == "The Bronx" then
     window:seperator({name = "Game"}) do
@@ -14028,7 +14028,7 @@ if Game_Name == "The Bronx" then
                         pcall(Teleport, OldCFrame)
 
                         library.notifications:create_notification({
-                            name = "41hub.cc",
+                            name = "Aethra",
                             info = `Successfully safed {state}!`,
                             lifetime = 5
                         })
@@ -14070,7 +14070,7 @@ if Game_Name == "The Bronx" then
                         pcall(Teleport, OldCFrame)
 
                         library.notifications:create_notification({
-                            name = "41hub.cc",
+                            name = "Aethra",
                             info = `Successfully took {state} from safe!`,
                             lifetime = 5
                         })
@@ -14438,7 +14438,7 @@ if Game_Name == "The Bronx" then
                 ManualFarmSections:button({name = "Clean All Filthy Money", callback = LPH_NO_VIRTUALIZE(function()
                     if LocalPlayer.stored.FilthyStack.Value == 0 then 
                         return library.notifications:create_notification({
-                            name = "41hub.cc",
+                            name = "Aethra",
                             info = `You have no fucking money poor fuck!`,
                             lifetime = 7.5
                         })
@@ -14451,7 +14451,7 @@ if Game_Name == "The Bronx" then
                     
                     if not Cleaner then
                         return library.notifications:create_notification({
-                            name = "41hub.cc",
+                            name = "Aethra",
                             info = `Could not find a valid cleaner!`,
                             lifetime = 7.5
                         })
@@ -14515,7 +14515,7 @@ if Game_Name == "The Bronx" then
                     task.spawn(function()
                         if Cooldown then
                             library.notifications:create_notification({
-                                name = "41hub.cc",
+                                name = "Aethra",
                                 info = `Please wait!`,
                                 lifetime = 5
                             })
@@ -14529,7 +14529,7 @@ if Game_Name == "The Bronx" then
 
                         if not Tool then
                             library.notifications:create_notification({
-                                name = "41hub.cc",
+                                name = "Aethra",
                                 info = `Could not find a tool! you must hold one.`,
                                 lifetime = 10
                             })
@@ -14667,7 +14667,7 @@ if Game_Name == "The Bronx" then
                     if Check then
                         DeleteSecretUI()
                         library.notifications:create_notification({
-                            name = "41hub.cc",
+                            name = "Aethra",
                             info = `Could not find items! Please check you have more than 5000$.`,
                             lifetime = 10
                         })
@@ -14780,7 +14780,7 @@ if Game_Name == "The Bronx" then
                         local Prompt = Workspace:FindFirstChild("GUNS")[self]:FindFirstChildWhichIsA("ProximityPrompt",true);
                         if (Workspace:FindFirstChild("GUNS")[self]:FindFirstChild("GamepassID", true) and not MarketplaceService:UserOwnsGamePassAsync(LocalPlayer.UserId, Workspace:FindFirstChild("GUNS")[self]:FindFirstChild("GamepassID",true).Value)) then 
                             return library.notifications:create_notification({
-                                name = "41hub.cc",
+                                name = "Aethra",
                                 info = `You do not own this gamepass!`,
                                 lifetime = 5
                             })
@@ -14791,7 +14791,7 @@ if Game_Name == "The Bronx" then
                         local Part = Prompt.Parent:IsA("Part") and Prompt.Parent.CFrame or Prompt.Parent:IsA("MeshPart") and Prompt.Parent.CFrame or Prompt.Parent:IsA("UnionOperation") and Prompt.Parent.CFrame;
                         if LocalPlayer.stored.Money.Value < Workspace:FindFirstChild("GUNS")[self]:FindFirstChild("Price",true).Value then
                             return library.notifications:create_notification({
-                                name = "41hub.cc",
+                                name = "Aethra",
                                 info = `You are ${Workspace:FindFirstChild("GUNS")[self]:FindFirstChild("Price",true).Value - LocalPlayer.stored.Money.Value} short.`,
                                 lifetime = 5
                             })
@@ -14825,7 +14825,7 @@ if Game_Name == "The Bronx" then
                         task.spawn(Teleport, OldCFrame)
 
                         library.notifications:create_notification({
-                            name = "41hub.cc",
+                            name = "Aethra",
                             info = `Successfully purchased {self}!`,
                             lifetime = 5
                         })
@@ -14853,7 +14853,7 @@ if Game_Name == "The Bronx" then
                         Teleport(Config.TheBronx.TeleportationList[state])
 
                         library.notifications:create_notification({
-                            name = "41hub.cc",
+                            name = "Aethra",
                             info = `Successfully teleported to {state}!`,
                             lifetime = 5
                         })
@@ -15134,7 +15134,7 @@ if Game_Name == "South Bronx" then
 
                             if Teleport_Status == "Failed" then
                                 library.notifications:create_notification({
-                                    name = "41hub.cc",
+                                    name = "Aethra",
                                     info = `Failed to purchase {self}!`,
                                     lifetime = 7.5
                                 })
@@ -15161,7 +15161,7 @@ if Game_Name == "South Bronx" then
 
                         if not LocalPlayer.Backpack:FindFirstChild(self) and not LocalPlayer.Character:FindFirstChild(self) then
                             library.notifications:create_notification({
-                                name = "41hub.cc",
+                                name = "Aethra",
                                 info = `Failed to purchase {self}!`,
                                 lifetime = 7.5
                             })
@@ -15172,13 +15172,13 @@ if Game_Name == "South Bronx" then
                         if not DidntBuy then
                             if suc then
                                 library.notifications:create_notification({
-                                    name = "41hub.cc",
+                                    name = "Aethra",
                                     info = `Successfully purchased {self}!`,
                                     lifetime = 5
                                 })
                             else
                                 library.notifications:create_notification({
-                                    name = "41hub.cc",
+                                    name = "Aethra",
                                     info = `Failed to purchase item {self} . error : {err}`,
                                     lifetime = 15
                                 })
@@ -15211,7 +15211,7 @@ if Game_Name == "South Bronx" then
 
                         if TP_Debounce then
                             library.notifications:create_notification({
-                                name = "41hub.cc",
+                                name = "Aethra",
                                 info = `Please wait!`,
                                 lifetime = 5
                             })
@@ -15236,7 +15236,7 @@ if Game_Name == "South Bronx" then
                                     Teleport(_Hobo)
                                 else
                                     library.notifications:create_notification({
-                                        name = "41hub.cc",
+                                        name = "Aethra",
                                         info = `Failed to locate dirty hobo crackhead!`,
                                         lifetime = 5
                                     })
@@ -15285,7 +15285,7 @@ if Game_Name == "South Bronx" then
 
                         if (LocalPlayer.Character.HumanoidRootPart.Position - _Position.Position).Magnitude > 20 then
                             library.notifications:create_notification({
-                                name = "41hub.cc",
+                                name = "Aethra",
                                 info = `Failed teleported to {state}!`,
                                 lifetime = 7.5
                             })
@@ -15295,13 +15295,13 @@ if Game_Name == "South Bronx" then
 
                         if suc then
                             library.notifications:create_notification({
-                                name = "41hub.cc",
+                                name = "Aethra",
                                 info = `Successfully teleported to {state}!`,
                                 lifetime = 5
                             })
                         else
                             library.notifications:create_notification({
-                                name = "41hub.cc",
+                                name = "Aethra",
                                 info = `Teleportation to {state}. error : {err}`,
                                 lifetime = 15
                             })
@@ -15361,7 +15361,7 @@ if Game_Name == "South Bronx" then
 
                         if (LocalPlayer.Character.HumanoidRootPart.Position - Players[Config.South_Bronx.PlayerUtilities.SelectedPlayer].Character.HumanoidRootPart.Position).Magnitude > 20 then
                             library.notifications:create_notification({
-                                name = "41hub.cc",
+                                name = "Aethra",
                                 info = `Failed to teleport to {Config.South_Bronx.PlayerUtilities.SelectedPlayer}!`,
                                 lifetime = 7.5
                             })
@@ -15371,13 +15371,13 @@ if Game_Name == "South Bronx" then
 
                         if Success then
                             library.notifications:create_notification({
-                                name = "41hub.cc",
+                                name = "Aethra",
                                 info = `Successfully teleported to {Config.South_Bronx.PlayerUtilities.SelectedPlayer}!`,
                                 lifetime = 7.5
                             })
                         else
                             library.notifications:create_notification({
-                                name = "41hub.cc",
+                                name = "Aethra",
                                 info = `Failed to teleport to {Config.South_Bronx.PlayerUtilities.SelectedPlayer}. Error : {Error}`,
                                 lifetime = 10
                             })
@@ -16001,5 +16001,4 @@ if hookfunction and not Solara and LPH_OBFUSCATED and Game_Name == "South Bronx"
         return _FireServer(self, ...)
     end)
 end
-
 
