@@ -14181,6 +14181,10 @@ if Game_Name == "The Bronx" then
                     Config.MiscSettings.ModifySpeed.Enabled = state
                 end})
 
+                CharacterModsSection:toggle({type = "toggle", name = "Auto Drop", flag = "AutoDrop", default = false, callback = function(state)
+                    Config.TheBronx.AutoDrop = state
+                end})                
+                
                 CharacterModsSection:toggle({type = "toggle", name = "Modify JumpPower", flag = "ModifyJumpPower_TheBronx", default = false, callback = function(state)
                     Config.MiscSettings.ModifyJump.Enabled = state
                 end})
@@ -14226,6 +14230,10 @@ if Game_Name == "The Bronx" then
                 CharacterModsSection:slider({name = "WalkSpeed Value", flag = "WalkSpeedValue_TheBronx", min = 0, max = 250, default = 50, suffix = "%", callback = function(state)
                     Config.MiscSettings.ModifySpeed.Value = state
                 end})
+
+                CharacterModsSection:slider({name = "Cash Amount", flag = "MoneyAmount", min = 100, max = 10000, default = 10, suffix = "$", callback = function(state)
+                    Config.TheBronx.MoneyAmount = state
+                end})                
 
                 CharacterModsSection:slider({name = "JumpPower Value", flag = "JumpPowerValue_TheBronx", min = 0, max = 250, default = 7, suffix = "%", callback = function(state)
                     Config.MiscSettings.ModifyJump.Value = state
@@ -16001,4 +16009,3 @@ if hookfunction and not Solara and LPH_OBFUSCATED and Game_Name == "South Bronx"
         return _FireServer(self, ...)
     end)
 end
-
