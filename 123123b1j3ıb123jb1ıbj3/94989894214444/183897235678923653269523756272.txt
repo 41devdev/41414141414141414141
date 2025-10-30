@@ -5436,12 +5436,8 @@ do
             RunService.PreRender:Connect(LPH_NO_VIRTUALIZE(function()
                 if not Config.TheBronx.PlayerModifications.InstantRevive then return end
                 if not LocalPlayer.Character then return end
-                if not LocalPlayer.Character:FindFirstChild("Humanoid") then return end
-
-                if LocalPlayer.Character.Humanoid:GetState() == Enum.HumanoidStateType.Physics then
-                    FireServer(ReplicatedStorage.FSpamRemote)
-                    LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
-                end
+                FireServer(ReplicatedStorage.LoadCharacter)
+                
 
                 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, true)
             end))
