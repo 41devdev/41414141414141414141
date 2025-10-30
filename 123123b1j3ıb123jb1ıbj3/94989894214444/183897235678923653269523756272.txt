@@ -332,11 +332,11 @@ local Config = {
             ["InfiniteStamina"] = false;
             ["InfiniteHunger"] = false;
             ["InstantInteract"] = false;
-            ["InstantRevive"] = false;
+            ["FastRespawn"] = false;
             ["AutoPickupCash"] = false;
             ["AutoPickupBags"] = false;
             ["DisableCameraBobbing"] = false;
-            ["DisableCameras"] = false;
+            ["DisableJail"] = false;
             ["BypassLockedCars"] = false;
             ["DisableBloodEffects"] = false;
             ["NoJumpCooldown"] = false;
@@ -392,6 +392,9 @@ local Config = {
 
         ["AutoDrop"] = false;
         ["MoneyAmount"] = false;
+
+        ["tb3_fov"] = false;
+        ["FieldOfViewValue"] = 80;
 
         ["Fly"] = {
             ["Enabled"] = false;
@@ -1506,9 +1509,9 @@ do
                 end
             end
 
-            if Config.WorldVisuals.FieldOfViewEnabled then
+            if Config.TheBronx.tb3_fov then
                 Set_Fov = false
-                Camera.FieldOfView = Config.WorldVisuals.FieldOfViewValue
+                Camera.FieldOfView = Config.TheBronx.FieldOfViewValue
             else
                 if not Set_Fov then 
                     Set_Fov = true
@@ -4390,8 +4393,8 @@ do
                 end
 
                 if LocalPlayer.PlayerGui:FindFirstChild("CameraTexts") and LocalPlayer.PlayerGui:FindFirstChild("CameraTexts"):FindFirstChild("LocalScript") then
-                    LocalPlayer.PlayerGui:FindFirstChild("CameraTexts").Enabled = not Config.TheBronx.PlayerModifications.DisableCameras
-                    LocalPlayer.PlayerGui:FindFirstChild("CameraTexts").LocalScript.Disabled = Config.TheBronx.PlayerModifications.DisableCameras
+                    LocalPlayer.PlayerGui:FindFirstChild("CameraTexts").Enabled = not Config.TheBronx.PlayerModifications.DisableJail
+                    LocalPlayer.PlayerGui:FindFirstChild("CameraTexts").LocalScript.Disabled = Config.TheBronx.PlayerModifications.DisableJail
                 end
 
                 if LocalPlayer.PlayerGui:FindFirstChild("JumpDebounce") and LocalPlayer.PlayerGui:FindFirstChild("JumpDebounce"):FindFirstChild("LocalScript") then
@@ -4425,7 +4428,7 @@ do
             end))       
             
             LocalPlayer.CharacterAdded:Connect(LPH_NO_VIRTUALIZE(function()
-                if Config.TheBronx.PlayerModifications.DisableCameras then
+                if Config.TheBronx.PlayerModifications.DisableJail then
                     Lighting.Shiesty:FindFirstChildWhichIsA("RemoteEvent", true):FireServer()
                 end
             end))
@@ -5434,7 +5437,7 @@ do
             end)
 
             RunService.PreRender:Connect(LPH_NO_VIRTUALIZE(function()
-                if not Config.TheBronx.PlayerModifications.InstantRevive then return end
+                if not Config.TheBronx.PlayerModifications.FastRespawn then return end
                 if not LocalPlayer.Character then return end
                 FireServer(ReplicatedStorage.LoadCharacter)
                 
@@ -14150,11 +14153,11 @@ if Game_Name == "The Bronx" then
                     "Infinite Hunger";
                     "Infinite Stamina";
                     "Instant Interact";
-                    "Instant Revive";
+                    "Fast Respawn";
                     "Auto Pickup Cash";
                     "Auto Pickup Bags";
                     "Disable Camera Bobbing";
-                    --"Disable Cameras";
+                    "Disable Jail";
                     "Disable Blood Effects";
                     "Bypass Locked Cars";
                     "No Jump Cooldown";
@@ -14179,7 +14182,11 @@ if Game_Name == "The Bronx" then
 
                 CharacterModsSection:toggle({type = "toggle", name = "Auto Drop", flag = "AutoDrop", default = false, callback = function(state)
                     Config.TheBronx.AutoDrop = state
-                end})                
+                end})      
+                
+                CharacterModsSection:toggle({type = "toggle", name = "Set Fov", flag = "tb3_fov", default = false, callback = function(state)
+                    Config.TheBronx.tb3_fov = state
+                end})                    
                 
                 CharacterModsSection:toggle({type = "toggle", name = "Modify JumpPower", flag = "ModifyJumpPower_TheBronx", default = false, callback = function(state)
                     Config.MiscSettings.ModifyJump.Enabled = state
@@ -14229,7 +14236,11 @@ if Game_Name == "The Bronx" then
 
                 CharacterModsSection:slider({name = "Cash Amount", flag = "MoneyAmount", min = 100, max = 10000, default = 10, suffix = "$", callback = function(state)
                     Config.TheBronx.MoneyAmount = state
-                end})                
+                end})
+                
+                CharacterModsSection:slider({name = "Fov Value", flag = "FieldOfViewValue", min = 80, max = 130, default = 95, suffix = "%", callback = function(state)
+                    Config.TheBronx.FieldOfViewValue = state
+                end})                   
 
                 CharacterModsSection:slider({name = "JumpPower Value", flag = "JumpPowerValue_TheBronx", min = 0, max = 250, default = 7, suffix = "%", callback = function(state)
                     Config.MiscSettings.ModifyJump.Value = state
