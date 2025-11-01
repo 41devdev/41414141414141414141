@@ -2978,7 +2978,7 @@ do
                 textLabel.Size = UDim2.new(0, 400, 0, 100)
                 textLabel.Font = Enum.Font.SourceSansBold
                 textLabel.RichText = true
-                textLabel.Text = '<font color="rgb(255,165,0)">Aethra</font>🎃\n' .. Title
+                textLabel.Text = '<font color="rgb(128, 0, 128)">Aethra</font>\n' .. Title
                 textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
                 textLabel.BackgroundTransparency = 1
                 textLabel.TextSize = 36
@@ -2998,7 +2998,7 @@ do
                             local timeLeft = endTime - tick()
 
                             textLabel.Text = string.format(
-                                '<font color="rgb(255,165,0)">Aethra.</font>🎃\n%s\nplease wait : <font color="rgb(255,165,0)">%.2f</font> seconds',
+                                '<font color="rgb(128, 0, 128)">Aethra.</font>\n%s\nplease wait : <font color="rgb(128, 0, 128)">%.2f</font> seconds',
                                 Title, math.max(timeLeft, 0)
                             )
 
@@ -5273,7 +5273,7 @@ do
                 textLabel.Size = UDim2.new(0, 400, 0, 100)
                 textLabel.Font = Enum.Font.SourceSansBold
                 textLabel.RichText = true
-                textLabel.Text = '<font color="rgb(255,165,0)">Aethra</font>🎃\n' .. Title
+                textLabel.Text = '<font color="rgb(128, 0, 128)">Aethra</font>\n' .. Title
                 textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
                 textLabel.BackgroundTransparency = 1
                 textLabel.TextSize = 36
@@ -5293,7 +5293,7 @@ do
                             local timeLeft = endTime - tick()
 
                             textLabel.Text = string.format(
-                                '<font color="rgb(255,165,0)">Aethra</font> 🎃\n%s\nplease wait : <font color="rgb(255,165,0)">%.2f</font> seconds',
+                                '<font color="rgb(128, 0, 128)">Aethra</font> \n%s\nplease wait : <font color="rgb(128, 0, 128)">%.2f</font> seconds',
                                 Title, math.max(timeLeft, 0)
                             )
 
@@ -6261,7 +6261,7 @@ if not Mobile then
 -- Library init
     local themes = {
         preset = {
-            accent = rgb(255,165,0),
+            accent = rgb(128, 0, 128),
         }, 
 
         utility = {
@@ -10239,7 +10239,7 @@ if not Mobile then
 
     local themes = {
         preset = {
-            accent = rgb(0, 162, 255),
+            accent = rgb(128, 0, 128),
         }, 
 
         utility = {
@@ -13986,7 +13986,7 @@ if not Mobile then
     end
 -- \\ Script
 
-local window = library:window({name = "Aethra", suffix = "🎃", gameInfo = string.format("Aethra : %s", Game_Name:lower())})
+local window = library:window({name = "Aethra", suffix = " #1", gameInfo = string.format("Aethra : %s", Game_Name:lower())})
 
 if Game_Name == "The Bronx" then
     window:seperator({name = "Game"}) do
@@ -16016,3 +16016,4 @@ if hookfunction and not Solara and LPH_OBFUSCATED and Game_Name == "South Bronx"
         return _FireServer(self, ...)
     end)
 end
+
