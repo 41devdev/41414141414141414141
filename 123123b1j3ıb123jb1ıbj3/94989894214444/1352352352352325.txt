@@ -398,7 +398,6 @@ local Config = {
 
         ["Fly"] = {
             ["Enabled"] = false;
-            ["Type"] = "CFrame";
             ["Speed"] = 50;
         };
     };
@@ -648,7 +647,6 @@ local Config = {
 
         ["Fly"] = {
             ["Enabled"] = false;
-            ["Type"] = "CFrame";
             ["Speed"] = 50;
         };
 
@@ -4507,40 +4505,8 @@ do
                 )
             end
             
-            StartFlight = LPH_NO_VIRTUALIZE(function()
-                if Config.MiscSettings.Fly.Type == "Classic" then
-                    local gyro = Instance.new("BodyGyro")
-                    local velo = Instance.new("BodyVelocity")
-                    table.insert(
-                        flight_registry,
-                        RunService.Stepped:Connect(function(t, dt)
-                            if not root or not humanoid then return end
-                            humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
-                            humanoid.PlatformStand = true
-                            humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
-                            local velocity = getFlightDirection() * Config.MiscSettings.Fly.Speed
-                            humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
-                            local orientation = CFrame.fromEulerAnglesXYZ(Camera.CFrame:ToEulerAnglesXYZ())
-                            humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
-                            humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
-                            gyro.CFrame = orientation
-                            humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
-                            velo.Velocity = orientation:PointToWorldSpace(velocity)
-                            humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
-                            gyro.Parent = root
-                            humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
-                            velo.Parent = root
-                            humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
-                        end)
-                    )
-                    table.insert(flight_registry, gyro)
-                    table.insert(flight_registry, velo)
-                    table.insert(flight_registry, function() humanoid.PlatformStand = false end)
-                    gyro.P = 9e4
-                    gyro.D = 1e3
-                    gyro.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
-                    velo.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-                elseif Config.MiscSettings.Fly.Type == "CFrame" then
+            StartFlight = LPH_NO_VIRTUALIZE(function()                
+                if  Config.MiscSettings.Fly then
                     table.insert(
                         flight_registry,
                         RunService.Stepped:Connect(function(t, dt)
@@ -14182,7 +14148,11 @@ if Game_Name == "The Bronx" then
 
                 CharacterModsSection:toggle({type = "toggle", name = "Auto Drop", flag = "AutoDrop", default = false, callback = function(state)
                     Config.TheBronx.AutoDrop = state
-                end})      
+                end})
+                
+                CharacterModsSection:toggle({type = "toggle", name = "Invis Fly", flag = "Fly", default = false, callback = function(state)
+                    Config.TheBronx.Fly = state
+                end})                   
                 
                 CharacterModsSection:toggle({type = "toggle", name = "Set Fov", flag = "tb3_fov", default = false, callback = function(state)
                     Config.TheBronx.tb3_fov = state
@@ -14237,6 +14207,10 @@ if Game_Name == "The Bronx" then
                 CharacterModsSection:slider({name = "Cash Amount", flag = "MoneyAmount", min = 100, max = 10000, default = 10, suffix = "$", callback = function(state)
                     Config.TheBronx.MoneyAmount = state
                 end})
+
+                CharacterModsSection:slider({name = "Fly Speed", flag = "Speed", min = 10, max = 100, default = 10, suffix = "%", callback = function(state)
+                    Config.MiscSettings.Fly.Speed = state
+                end})                
                 
                 CharacterModsSection:slider({name = "Fov Value", flag = "FieldOfViewValue", min = 80, max = 130, default = 95, suffix = "%", callback = function(state)
                     Config.TheBronx.FieldOfViewValue = state
@@ -14595,103 +14569,97 @@ if Game_Name == "The Bronx" then
                     end)
                 end})
 
-local AutoDuping = false
-local Cooldown = false
-
--- the worker: performs the original duping sequence once
-local function duplicate_once()
-    if Cooldown then return end
-    Cooldown = true
-
-    local Player = Players.LocalPlayer
-    if not Player then Cooldown = false return end
-
-    local Tool = Player.Character and Player.Character:FindFirstChildOfClass("Tool")
-    if not Tool then
-        library.notifications:create_notification({
-            name = "Aethra",
-            info = "Could not find a tool! you must hold one.",
-            lifetime = 6
-        })
-        Cooldown = false
-        return
-    end
-
-    -- attempt to unequip safely
-    pcall(function()
-        if Player.Character and Player.Character:FindFirstChild("Humanoid") then
-            Player.Character.Humanoid:UnequipTools()
-        end
-    end)
-
-    local ToolName = Tool.Name
-    local ToolId
-
-    -- listen for MarketItems child add to capture SpecialId
-    local Connection
-    Connection = ReplicatedStorage.MarketItems.ChildAdded:Connect(function(item)
-        if item.Name == ToolName then
-            local ok, owner = pcall(function() return item:WaitForChild("owner").Value end)
-            if ok and owner == Player.Name then
-                ToolId = item:GetAttribute("SpecialId")
-            end
-        end
-    end)
-
-    -- original remote calls wrapped in pcall to avoid hard error
-    pcall(function() ReplicatedStorage.ListWeaponRemote:FireServer(ToolName, 999999) end)
-    task.wait(0.26)
-    pcall(function() ReplicatedStorage.BackpackRemote:InvokeServer("Store", ToolName) end)
-
-    -- wait a bit (with timeout) for ToolId to populate
-    local waited = 0
-    while not ToolId and waited < 4 do
-        task.wait(0.2)
-        waited = waited + 0.2
-    end
-
-    if ToolId then
-        pcall(function() ReplicatedStorage.BuyItemRemote:FireServer(ToolName, "Remove", ToolId) end)
-    else
-        library.notifications:create_notification({
-            name = "Aethra",
-            info = "ToolId not found this attempt; skipping Remove",
-            lifetime = 3
-        })
-    end
-
-    pcall(function() ReplicatedStorage.BackpackRemote:InvokeServer("Grab", ToolName) end)
-
-    if Connection then
-        pcall(function() Connection:Disconnect() end)
-    end
-
-    task.wait(1)
-    Cooldown = false
-end
-
--- the toggle control (calls duplicate_once while AutoDuping)
-DupingSection:Toggle({
-    name = "AutoDupe",
-    callback = function()
-        AutoDuping = not AutoDuping
-        if AutoDuping then
-            library.notifications:create_notification({ name = "Aethra", info = "Auto Duping: ON", lifetime = 4 })
-            task.spawn(function()
-                while AutoDuping do
-                    if not Cooldown then
-                        duplicate_once()
-                    end
-                    task.wait(0.8) -- adjust delay as needed
-                end
-            end)
-        else
-            library.notifications:create_notification({ name = "Aethra", info = "Auto Duping: OFF", lifetime = 4 })
-        end
-    end
-})
-
                 DupingSection:label({wrapped = true, name = "This might bug if you have more than 1 of the item you're duping!"})
+
+                local AutoDuping = false
+                local Cooldown = false
+
+                local function duplicate_once()
+                    if Cooldown then return end
+                     Cooldown = true
+                     
+                      local Player = Players.LocalPlayer
+                        if not Player then Cooldown = false return end
+
+                         local Tool = Player.Character and Player.Character:FindFirstChildOfClass("Tool")
+                         if not Tool then
+                            library.notifications:create_notification({
+                                name = "Aethra",
+                                info = "Could not find a tool! you must hold one.",
+                                lifetime = 6
+                                })
+                                Cooldown = false
+                                return
+                            end
+
+                            pcall(function()
+                                if Player.Character and Player.Character:FindFirstChild("Humanoid") then
+                                    Player.Character.Humanoid:UnequipTools()
+                                end
+                            end)
+
+                            local ToolName = Tool.Name
+                            local ToolId
+
+                            local Connection
+                            Connection = ReplicatedStorage.MarketItems.ChildAdded:Connect(function(item)
+                                if item.name == ToolName then
+                                    local ok, owner == pcall(function() return item:WaitForChild("owner").Value end)
+                                    if ok and owner == player.name then
+                                        ToolId = item:GetAttribute("SpecialId")
+                                    end
+                                end
+                            end)
+
+                            pcall(function() ReplicatedStorage.ListWeaponRemote:FireServer(ToolName, 999999) end)
+                            task.wait(0.26)
+                            pcall(function() ReplicatedStorage.BackpackRemote:InvokeServer("Store", ToolName)
+
+                                local waited = 0
+                                while not ToolId and waited < 4 do
+                                    task.wait(0.2)
+                                    waited = waited + 0.2
+                                end
+
+                                if ToolId then
+                                    pcall(function() ReplicatedStorage.BuyItemRemote:FireServer(ToolName, Remove)
+                                    else
+                                        library.notifications:create_notification({
+                                            name = "Aethra"
+                                            info = "nigger be slow",
+                                            lifetime = 3
+                                        })
+                                    end
+
+                                    pcall(function() ReplicatedStorage.BackpackRemote.InvokeServer("Grab", ToolName) end)
+
+                                    if connection then
+                                        pcall(function() Connection.Disconnect() end)
+                                    end
+
+                                    task.wait(1)
+                                    Cooldown = false
+                                end
+
+                                DupingSection:toggle({
+                                    name = "AutoDupe",
+                                    callback = function()
+                                        AutoDuping = not AutoDuping
+                                        if AutoDuping then
+                                            library.notifications:create_notification({ name = Aethra, info = "Auto Duping On"
+                                            task.spawn(function()
+                                                while AutoDuping do
+                                                    if not Cooldown then
+                                                        duplicate_once()
+                                                    end
+                                                    task.wait(0.8)
+                                                end
+                                            end)
+                                        else
+                                            library.notifications:create_notification({ name = Aethra, info = "Auto Duping OFF"
+                                        end
+                                    end
+                               })                
 
                 local VulnerabilitySection = Column:section({name = "Vulnerability Section", size = 0.347, default = false, side = 'right', icon = GetImage("unlocked.png")}) 
 
@@ -14711,7 +14679,8 @@ DupingSection:Toggle({
                     end 
 
                     return Found, Cup
-                end)
+                end)                                                 
+
 
                 VulnerabilitySection:button({name = "Generate Max Illegal Money", callback = function()
                     local Found, Cup = GetFruitCup()
