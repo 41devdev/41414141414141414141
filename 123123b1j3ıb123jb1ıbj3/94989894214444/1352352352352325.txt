@@ -14597,8 +14597,6 @@ if Game_Name == "The Bronx" then
 
                 DupingSection:label({wrapped = true, name = "This might bug if you have more than 1 of the item you're duping!"})
 
-                local Cooldown = false;
-
                 DupingSection:Toggle({name = "Auto Dupe", callback = function()
                     task.spawn(function()
                         if Cooldown then
@@ -14663,7 +14661,7 @@ if Game_Name == "The Bronx" then
                         Connection:Disconnect()
 
                         task.wait(1)
-                        Loop
+                        Loop()
 
                         Cooldown = false
                     end)
