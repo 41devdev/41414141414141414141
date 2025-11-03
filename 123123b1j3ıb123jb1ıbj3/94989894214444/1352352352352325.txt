@@ -14595,77 +14595,103 @@ if Game_Name == "The Bronx" then
                     end)
                 end})
 
+local AutoDuping = false
+local Cooldown = false
+
+-- the worker: performs the original duping sequence once
+local function duplicate_once()
+    if Cooldown then return end
+    Cooldown = true
+
+    local Player = Players.LocalPlayer
+    if not Player then Cooldown = false return end
+
+    local Tool = Player.Character and Player.Character:FindFirstChildOfClass("Tool")
+    if not Tool then
+        library.notifications:create_notification({
+            name = "Aethra",
+            info = "Could not find a tool! you must hold one.",
+            lifetime = 6
+        })
+        Cooldown = false
+        return
+    end
+
+    -- attempt to unequip safely
+    pcall(function()
+        if Player.Character and Player.Character:FindFirstChild("Humanoid") then
+            Player.Character.Humanoid:UnequipTools()
+        end
+    end)
+
+    local ToolName = Tool.Name
+    local ToolId
+
+    -- listen for MarketItems child add to capture SpecialId
+    local Connection
+    Connection = ReplicatedStorage.MarketItems.ChildAdded:Connect(function(item)
+        if item.Name == ToolName then
+            local ok, owner = pcall(function() return item:WaitForChild("owner").Value end)
+            if ok and owner == Player.Name then
+                ToolId = item:GetAttribute("SpecialId")
+            end
+        end
+    end)
+
+    -- original remote calls wrapped in pcall to avoid hard error
+    pcall(function() ReplicatedStorage.ListWeaponRemote:FireServer(ToolName, 999999) end)
+    task.wait(0.26)
+    pcall(function() ReplicatedStorage.BackpackRemote:InvokeServer("Store", ToolName) end)
+
+    -- wait a bit (with timeout) for ToolId to populate
+    local waited = 0
+    while not ToolId and waited < 4 do
+        task.wait(0.2)
+        waited = waited + 0.2
+    end
+
+    if ToolId then
+        pcall(function() ReplicatedStorage.BuyItemRemote:FireServer(ToolName, "Remove", ToolId) end)
+    else
+        library.notifications:create_notification({
+            name = "Aethra",
+            info = "ToolId not found this attempt; skipping Remove",
+            lifetime = 3
+        })
+    end
+
+    pcall(function() ReplicatedStorage.BackpackRemote:InvokeServer("Grab", ToolName) end)
+
+    if Connection then
+        pcall(function() Connection:Disconnect() end)
+    end
+
+    task.wait(1)
+    Cooldown = false
+end
+
+-- the toggle control (calls duplicate_once while AutoDuping)
+DupingSection:Toggle({
+    name = "AutoDupe",
+    callback = function()
+        AutoDuping = not AutoDuping
+        if AutoDuping then
+            library.notifications:create_notification({ name = "Aethra", info = "Auto Duping: ON", lifetime = 4 })
+            task.spawn(function()
+                while AutoDuping do
+                    if not Cooldown then
+                        duplicate_once()
+                    end
+                    task.wait(0.8) -- adjust delay as needed
+                end
+            end)
+        else
+            library.notifications:create_notification({ name = "Aethra", info = "Auto Duping: OFF", lifetime = 4 })
+        end
+    end
+})
+
                 DupingSection:label({wrapped = true, name = "This might bug if you have more than 1 of the item you're duping!"})
-
-                DupingSection:Toggle({name = "Auto Dupe", callback = function()
-                    task.spawn(function()
-                        if Cooldown then
-                            library.notifications:create_notification({
-                                name = "Aethra",
-                                info = `Please wait!`,
-                                lifetime = 5
-                            })
-                            return
-                        end
-                        Cooldown = true
-                        local Player = Players.LocalPlayer
-                        local Backpack = Player.Backpack
-
-                        local Tool = Player.Character:FindFirstChildOfClass("Tool")
-
-                        if not Tool then
-                            library.notifications:create_notification({
-                                name = "Aethra",
-                                info = `Could not find a tool! you must hold one.`,
-                                lifetime = 10
-                            })
-                            return
-                        end
-
-                        Player.Character.Humanoid:UnequipTools()
-
-                        local ToolName = Tool.Name
-                        local ToolId
-
-                        local Connection = ReplicatedStorage.MarketItems.ChildAdded:Connect(
-                            function(item)
-
-                                if item.Name == ToolName then
-                                    if item:WaitForChild('owner').Value == Player.Name then
-                                        ToolId = item:GetAttribute('SpecialId')
-                                    end
-                                end
-                            end
-                        )
-
-                        spawn(function()
-                            ReplicatedStorage.ListWeaponRemote:FireServer(ToolName, 999999)
-                        end)
-
-                        task.wait(.26)
-
-                        spawn(function()
-                            ReplicatedStorage.BackpackRemote:InvokeServer('Store', ToolName)
-                        end)
-
-                        task.wait(3)
-
-                        spawn(function()
-                            ReplicatedStorage.BuyItemRemote:FireServer(ToolName, 'Remove', ToolId)
-                        end)
-
-                        spawn(function()
-                            ReplicatedStorage.BackpackRemote:InvokeServer("Grab", ToolName)
-                        end)
-
-                        Connection:Disconnect()
-
-                        task.wait(1)
-                        Loop()
-
-                        Cooldown = false
-                    end)
-                end})
 
                 local VulnerabilitySection = Column:section({name = "Vulnerability Section", size = 0.347, default = false, side = 'right', icon = GetImage("unlocked.png")}) 
 
