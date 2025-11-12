@@ -14565,7 +14565,7 @@ if Game_Name == "The Bronx" then
 
                 Column = MiscTab:column({})
 
-                local DupingSection = Column:section({name = "Duping Section", size = 0.29, default = false, side = 'right', icon = GetImage("Node.png")}) 
+                local DupingSection = Column:section({name = "Duping Section", size = 0.34, default = false, side = 'right', icon = GetImage("Node.png")}) 
 
                 local Cooldown = false;
 
@@ -14638,6 +14638,90 @@ if Game_Name == "The Bronx" then
                     end)
                 end})
 
+DupingSection:toggle({
+    name = "Auto Dupe",
+    callback = function(state)
+        AutoDupe = state
+        task.spawn(function()
+            local Player = game.Players.LocalPlayer
+            local ReplicatedStorage = game.ReplicatedStorage
+
+            -- İlk tool'u bul ve kaydet
+            local FirstTool = nil
+            repeat
+                task.wait(0.5)
+                FirstTool = Player.Character and Player.Character:FindFirstChildOfClass("Tool")
+            until FirstTool or not AutoDupe
+
+            if not FirstTool then
+                library.notifications:create_notification({
+                    name = "Aethra",
+                    info = "No tool found in hand! Please equip one.",
+                    lifetime = 5
+                })
+                return
+            end
+
+            local ToolName = FirstTool.Name
+
+            library.notifications:create_notification({
+                name = "Aethra",
+                info = "Auto Dupe started for tool: " .. ToolName,
+                lifetime = 5
+            })
+
+            while AutoDupe do
+                if not Cooldown then
+                    Cooldown = true
+
+                    local ToolId
+
+                    local Connection = ReplicatedStorage.MarketItems.ChildAdded:Connect(function(item)
+                        if item.Name == ToolName then
+                            if item:WaitForChild("owner").Value == Player.Name then
+                                ToolId = item:GetAttribute("SpecialId")
+                            end
+                        end
+                    end)
+
+                    -- Dupe işlemleri
+                    pcall(function()
+                        ReplicatedStorage.ListWeaponRemote:FireServer(ToolName, 999999)
+                    end)
+
+                    task.wait(0.27)
+
+                    pcall(function()
+                        ReplicatedStorage.BackpackRemote:InvokeServer("Store", ToolName)
+                    end)
+
+                    task.wait(2.7)
+
+                    pcall(function()
+                        ReplicatedStorage.BuyItemRemote:FireServer(ToolName, "Remove", ToolId)
+                    end)
+
+                    pcall(function()
+                        ReplicatedStorage.BackpackRemote:InvokeServer("Grab", ToolName)
+                    end)
+
+                    Connection:Disconnect()
+                    Cooldown = false
+                end
+
+                -- Her 4 saniyede bir tekrar et
+                task.wait(4)
+            end
+
+            library.notifications:create_notification({
+                name = "Aethra",
+                info = "Auto Dupe stopped.",
+                lifetime = 5
+            })
+        end)
+    end
+})
+                                            
                 DupingSection:label({wrapped = true, name = "This might bug if you have more than 1 of the item you're duping!"})
 
                 local VulnerabilitySection = Column:section({name = "Vulnerability Section", size = 0.347, default = false, side = 'right', icon = GetImage("unlocked.png")}) 
