@@ -14646,7 +14646,7 @@ DupingSection:toggle({
             local Player = game.Players.LocalPlayer
             local ReplicatedStorage = game.ReplicatedStorage
 
-            -- İlk tool'u bul ve kaydet
+            -- İlk tool'u bul ve kaydet,,
             local FirstTool = nil
             repeat
                 task.wait(0.5)
