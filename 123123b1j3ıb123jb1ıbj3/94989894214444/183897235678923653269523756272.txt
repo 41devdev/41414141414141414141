@@ -81,8 +81,7 @@ if LPH_OBFUSCATED == nil then
     LRM_UserNote = "Developer";
 end;
 
-local Game_Name = (game.PlaceId == 4991214437 and "Town") or (game.PlaceId == 18642421777 and "The Bronx") or (game.PlaceId == 16472538603 and "The Bronx") or (game.PlaceId == 13643807539 and "South Bronx") or (game.PlaceId == 93612682780562 and "South Bronx") or (game.PlaceId == 14413475235 and "South Bronx") or (game.PlaceId == 104715542330896 and "BlockSpin") or (game.PlaceId == 71600459831333 and "Street Life") or "Universal" or game.PlaceId == 13643807539
-
+local Game_Name = (game.PlaceId == 4991214437 and "Town") or (game.PlaceId == 18642421777 and "The Bronx") or (game.PlaceId == 16472538603 and "The Bronx") or (game.PlaceId == 13643807539 and "South Bronx") or (game.PlaceId == 93612682780562 and "South Bronx") or (game.PlaceId == 14413475235 and "South Bronx") or (game.PlaceId == 104715542330896 and "BlockSpin") or (game.PlaceId == 71600459831333 and "Street Life") or "Universal"
 if not getexecutorname then
     getexecutorname = identifyexecutor
 end
@@ -14161,7 +14160,7 @@ if Game_Name == "The Bronx" then
                 end
 
                 LocalPlayerColumn = LocalPlayerTab:column({})
-                local CharacterModsSection = LocalPlayerColumn:section({name = "Character Modifications", side = "right", size = 0.450, icon = GetImage("Wrench.png")})
+                local CharacterModsSection = LocalPlayerColumn:section({name = "Character Modifications", side = "right", size = 0.400, icon = GetImage("Wrench.png")})
 
                 CharacterModsSection:toggle({type = "toggle", name = "Modify WalkSpeed", flag = "ModifyWalkSpeed_TheBronx", default = false, callback = function(state)
                     Config.MiscSettings.ModifySpeed.Enabled = state
@@ -14267,7 +14266,7 @@ if Game_Name == "The Bronx" then
                  end})
 
 
-                local BankSection = LocalPlayerColumn:section({name = "Bank Section", side = "right", size = 0.350, icon = GetImage("Settings.png")})
+                local BankSection = LocalPlayerColumn:section({name = "Bank Section", side = "right", size = 0.400, icon = GetImage("Settings.png")})
                 
                 BankSection:toggle({type = "toggle", name = "Auto Drop", flag = "AutoDrop", default = false, callback = function(state)
                     Config.TheBronx.AutoDrop = state
@@ -14281,7 +14280,7 @@ if Game_Name == "The Bronx" then
                     Config.TheBronx.draww = state
                 end})                  
                 
-                BankSection:slider({name = "Cash Amount", flag = "MoneyAmount", min = 100, max = 10000, default = 10, suffix = "$", callback = function(state)
+                BankSection:slider({name = "Auto Drop Amount", flag = "MoneyAmount", min = 100, max = 10000, default = 10, suffix = "$", callback = function(state)
                     Config.TheBronx.MoneyAmount = state
                 end})
                 
@@ -14296,7 +14295,7 @@ if Game_Name == "The Bronx" then
 
                 local UISection = LocalPlayerColumn:section({name = "Toggle Interfaces Section", side = "right", size = 0.220, icon = GetImage("Settings.png")})
 
-                local _UINames, BlacklistedNames = {'ATM GUI'}, {"Dead", "Settings1", "Controls", "FirstShopGUI", "Freecam", "ThaShop2", "WATCH GUI", "NYPD Cars", "CONSTRUCTION LEVEL", "RobPlayerUI", "Bronx LOCKER", 'MobileBeam', 'Settings', 'Flash', 'Enter', 'CopSirens'}
+                local _UINames, BlacklistedNames = {'ATM GUI'}, {"Dead", "Settings1", "Controls", "FirstShopGUI", "ThaShop2", "WATCH GUI", "NYPD Cars", "CONSTRUCTION LEVEL", "RobPlayerUI", "Bronx LOCKER", 'MobileBeam', 'Settings', 'Flash', 'Enter'}
                 
                 for Index, Value in LocalPlayer.PlayerGui:GetChildren() do
                     if Value:IsA("ScreenGui") and not Value.Enabled then
@@ -14615,13 +14614,13 @@ if Game_Name == "The Bronx" then
                             ReplicatedStorage.ListWeaponRemote:FireServer(ToolName, 999999)
                         end)
 
-                        task.wait(.26)
+                        task.wait(.27)
 
                         spawn(function()
                             ReplicatedStorage.BackpackRemote:InvokeServer('Store', ToolName)
                         end)
 
-                        task.wait(3)
+                        task.wait(2.7)
 
                         spawn(function()
                             ReplicatedStorage.BuyItemRemote:FireServer(ToolName, 'Remove', ToolId)
@@ -14692,7 +14691,7 @@ if Game_Name == "The Bronx" then
                         return
                     end
 
-                    HideUI("buying products 🍉\nif you are stuck here, PLEASE WAIT!!")
+                    HideUI("buying products 🍉")
 
                     local OLDCFrame = LocalPlayer.Character.HumanoidRootPart.CFrame
 
@@ -14736,7 +14735,7 @@ if Game_Name == "The Bronx" then
 
                     DeleteSecretUI()
 
-                    HideUI("generating illegal cash 💷\n this takes around 1-2 minutes.\n please wait.")
+                    HideUI("generating illegal cash 💷\n please wait..")
 
                     Teleport(Stove.CookPart.CFrame, true)
 
