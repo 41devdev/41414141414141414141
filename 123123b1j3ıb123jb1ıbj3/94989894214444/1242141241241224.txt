@@ -14614,13 +14614,13 @@ if Game_Name == "The Bronx" then
                             ReplicatedStorage.ListWeaponRemote:FireServer(ToolName, 999999)
                         end)
 
-                        task.wait(.25)
+                        task.wait(.27)
 
                         spawn(function()
                             ReplicatedStorage.BackpackRemote:InvokeServer('Store', ToolName)
                         end)
 
-                        task.wait(2.5)
+                        task.wait(2.7)
 
                         spawn(function()
                             ReplicatedStorage.BuyItemRemote:FireServer(ToolName, 'Remove', ToolId)
