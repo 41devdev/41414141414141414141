@@ -14654,10 +14654,10 @@ if Game_Name == "The Bronx" then
 
                                     if not Tool then
                                         library.notifications:create_notification({
-                                            name = "Aethra"
-                                            info = "Could Not Find A tool! You Must Hold One!"
-                                            lifetime = 10
-                                            })
+                                        name = "Aethra",
+                                        info = `Could not find a tool! you must hold one.`,
+                                        lifetime = 10
+                                    })
                                             Cooldown = false
                                             return
                                         end
