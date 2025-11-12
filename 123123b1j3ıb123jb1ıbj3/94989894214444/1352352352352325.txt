@@ -81,8 +81,7 @@ if LPH_OBFUSCATED == nil then
     LRM_UserNote = "Developer";
 end;
 
-local Game_Name = (game.PlaceId == 4991214437 and "Town") or (game.PlaceId == 18642421777 and "The Bronx") or (game.PlaceId == 16472538603 and "The Bronx") or (game.PlaceId == 13643807539 and "South Bronx") or (game.PlaceId == 93612682780562 and "South Bronx") or (game.PlaceId == 14413475235 and "South Bronx") or (game.PlaceId == 104715542330896 and "BlockSpin") or (game.PlaceId == 71600459831333 and "Street Life") or "Universal" or game.PlaceId == 13643807539
-
+local Game_Name = (game.PlaceId == 4991214437 and "Town") or (game.PlaceId == 18642421777 and "The Bronx") or (game.PlaceId == 16472538603 and "The Bronx") or (game.PlaceId == 13643807539 and "South Bronx") or (game.PlaceId == 93612682780562 and "South Bronx") or (game.PlaceId == 14413475235 and "South Bronx") or (game.PlaceId == 104715542330896 and "BlockSpin") or (game.PlaceId == 71600459831333 and "Street Life") or "Universal"
 if not getexecutorname then
     getexecutorname = identifyexecutor
 end
@@ -336,7 +335,6 @@ local Config = {
             ["AutoPickupCash"] = false;
             ["AutoPickupBags"] = false;
             ["DisableCameraBobbing"] = false;
-            ["DisableJail"] = false;
             ["BypassLockedCars"] = false;
             ["DisableBloodEffects"] = false;
             ["NoJumpCooldown"] = false;
@@ -393,12 +391,20 @@ local Config = {
         ["AutoDrop"] = false;
         ["MoneyAmount"] = false;
 
+         ["maskedup"] = false;
+
+        ["depos"] = false;
+        ["DepositAmount"] = false;
+
+        ["draww"] = false;
+        ["WithdrawAmount"] = false;
+
         ["tb3_fov"] = false;
         ["FieldOfViewValue"] = 80;
 
         ["Fly"] = {
             ["Enabled"] = false;
-            ["Speed"] = 50;
+            ["hiz"] = 50;
         };
     };
 
@@ -1477,7 +1483,7 @@ do
                 Lighting.Brightness = 2
                 Lighting.ClockTime = 14
                 Lighting.FogEnd = 100000
-                Lighting.GlobalShadows = false
+                Lighting.GlobalShadows = true
                 Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
             else
                 if not Set_FullBright then
@@ -4506,13 +4512,13 @@ do
             end
             
             StartFlight = LPH_NO_VIRTUALIZE(function()                
-                if  Config.MiscSettings.Fly then
+                if  Config.TheBronx.Fly then
                     table.insert(
                         flight_registry,
                         RunService.Stepped:Connect(function(t, dt)
                             if not root or not humanoid then return end
                             humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
-                            local velocity = getFlightDirection() * Config.MiscSettings.Fly.Speed * dt
+                            local velocity = getFlightDirection() * Config.TheBronx.Fly.hiz * dt
                             humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
                             local position, orientation = CFrame.new(root.Position), CFrame.fromEulerAnglesXYZ(Camera.CFrame:ToEulerAnglesXYZ())
                             humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
@@ -4818,6 +4824,21 @@ do
                     ReplicatedStorage:WaitForChild("BankProcessRemote"):InvokeServer("Drop", tostring(Config.TheBronx.MoneyAmount))
                 end
             end))
+
+            task.spawn(LPH_NO_VIRTUALIZE(function()
+                while task.wait(.25) do
+                    if not Config.TheBronx.depos then continue end
+                    ReplicatedStorage:WaitForChild("BankAction"):FireServer("depo", tostring(Config.TheBronx.DepositAmount))
+                    end
+                end))
+
+            
+            task.spawn(LPH_NO_VIRTUALIZE(function()
+                while task.wait(.25) do
+                    if not Config.TheBronx.draww then continue end
+                        ReplicatedStorage:WaitForChild("BankAction"):FireServer("with", tostring(Config.TheBronx.WithdrawAmount))
+                    end
+                end))      
 
             task.spawn(LPH_NO_VIRTUALIZE(function()
                 while task.wait(1) do
@@ -14123,7 +14144,6 @@ if Game_Name == "The Bronx" then
                     "Auto Pickup Cash";
                     "Auto Pickup Bags";
                     "Disable Camera Bobbing";
-                    "Disable Jail";
                     "Disable Blood Effects";
                     "Bypass Locked Cars";
                     "No Jump Cooldown";
@@ -14140,19 +14160,11 @@ if Game_Name == "The Bronx" then
                 end
 
                 LocalPlayerColumn = LocalPlayerTab:column({})
-                local CharacterModsSection = LocalPlayerColumn:section({name = "Character Modifications", side = "right", size = 0.645, icon = GetImage("Wrench.png")})
+                local CharacterModsSection = LocalPlayerColumn:section({name = "Character Modifications", side = "right", size = 0.450, icon = GetImage("Wrench.png")})
 
                 CharacterModsSection:toggle({type = "toggle", name = "Modify WalkSpeed", flag = "ModifyWalkSpeed_TheBronx", default = false, callback = function(state)
                     Config.MiscSettings.ModifySpeed.Enabled = state
                 end})
-
-                CharacterModsSection:toggle({type = "toggle", name = "Auto Drop", flag = "AutoDrop", default = false, callback = function(state)
-                    Config.TheBronx.AutoDrop = state
-                end})
-                
-                CharacterModsSection:toggle({type = "toggle", name = "Invis Fly", flag = "Fly", default = false, callback = function(state)
-                    Config.TheBronx.Fly = state
-                end})                   
                 
                 CharacterModsSection:toggle({type = "toggle", name = "Set Fov", flag = "tb3_fov", default = false, callback = function(state)
                     Config.TheBronx.tb3_fov = state
@@ -14204,14 +14216,6 @@ if Game_Name == "The Bronx" then
                     Config.MiscSettings.ModifySpeed.Value = state
                 end})
 
-                CharacterModsSection:slider({name = "Cash Amount", flag = "MoneyAmount", min = 100, max = 10000, default = 10, suffix = "$", callback = function(state)
-                    Config.TheBronx.MoneyAmount = state
-                end})
-
-                CharacterModsSection:slider({name = "Fly Speed", flag = "Speed", min = 10, max = 100, default = 10, suffix = "%", callback = function(state)
-                    Config.MiscSettings.Fly.Speed = state
-                end})                
-                
                 CharacterModsSection:slider({name = "Fov Value", flag = "FieldOfViewValue", min = 80, max = 130, default = 95, suffix = "%", callback = function(state)
                     Config.TheBronx.FieldOfViewValue = state
                 end})                   
@@ -14224,7 +14228,72 @@ if Game_Name == "The Bronx" then
                     Config.TheBronx.ClickTeleportActive = state
                 end})
 
-                local UISection = LocalPlayerColumn:section({name = "Toggle Interfaces Section", side = "right", size = 0.225, icon = GetImage("Settings.png")})
+                CharacterModsSection:button({name = "Wear Shiesty, Gloves.", callback = function()
+                local Player = game.Players.LocalPlayer
+                local Backpack = Player:WaitForChild("Backpack")
+                local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+                ReplicatedStorage:WaitForChild("ShopRemote"):InvokeServer("Shiesty")
+                ReplicatedStorage:WaitForChild("ShopRemote"):InvokeServer("BlackGloves")
+
+                task.wait(0.5)
+
+                local Shiesty = Backpack:FindFirstChild("Shiesty") or Player.Character:FindFirstChild("Shiesty")
+                if Shiesty then
+                Player.Character.Humanoid:EquipTool(Shiesty)
+                task.wait(0.3)
+
+                local Remote = Shiesty:FindFirstChild("RemoteEvent")
+                if Remote then
+                Remote:FireServer()
+                end
+
+                 task.wait(0.5)
+                 Player.Character.Humanoid:UnequipTools()
+                 end
+
+                 task.wait(0.3)
+                 local Gloves = Backpack:FindFirstChild("BlackGloves") or Player.Character:FindFirstChild("BlackGloves")
+                 if Gloves then
+                 Player.Character.Humanoid:EquipTool(Gloves)
+                 task.wait(0.3)
+
+                 Gloves:Activate()
+
+                 task.wait(0.5)
+                 Player.Character.Humanoid:UnequipTools()
+                 end
+                 end})
+
+
+                local BankSection = LocalPlayerColumn:section({name = "Bank Section", side = "right", size = 0.350, icon = GetImage("Settings.png")})
+                
+                BankSection:toggle({type = "toggle", name = "Auto Drop", flag = "AutoDrop", default = false, callback = function(state)
+                    Config.TheBronx.AutoDrop = state
+                end})  
+                
+                 BankSection:toggle({type = "toggle", name = "Auto Deposit", flag = "depos", default = false, callback = function(state)
+                    Config.TheBronx.depos = state
+                end})
+                
+                 BankSection:toggle({type = "toggle", name = "Auto Withdraw", flag = "draww", default = false, callback = function(state)
+                    Config.TheBronx.draww = state
+                end})                  
+                
+                BankSection:slider({name = "Cash Amount", flag = "MoneyAmount", min = 100, max = 10000, default = 10, suffix = "$", callback = function(state)
+                    Config.TheBronx.MoneyAmount = state
+                end})
+                
+                BankSection:slider({name = "Auto Deposit Amount", flag = "DepositAmount", min = 1, max = 30000, default = 500, suffix = "$", callback = function(state)
+                    Config.TheBronx.DepositAmount = state
+                end})
+                
+                BankSection:slider({name = "Auto Withdraw Amount", flag = "WithdrawAmount", min = 1, max = 90000, default = 500, suffix = "$", callback = function(state)
+                    Config.TheBronx.WithdrawAmount = state
+                end})                                     
+                
+
+                local UISection = LocalPlayerColumn:section({name = "Toggle Interfaces Section", side = "right", size = 0.220, icon = GetImage("Settings.png")})
 
                 local _UINames, BlacklistedNames = {'ATM GUI'}, {"Dead", "Settings1", "Controls", "FirstShopGUI", "Freecam", "ThaShop2", "WATCH GUI", "NYPD Cars", "CONSTRUCTION LEVEL", "RobPlayerUI", "Bronx LOCKER", 'MobileBeam', 'Settings', 'Flash', 'Enter', 'CopSirens'}
                 
@@ -14545,7 +14614,7 @@ if Game_Name == "The Bronx" then
                             ReplicatedStorage.ListWeaponRemote:FireServer(ToolName, 999999)
                         end)
 
-                        task.wait(.26)
+                        task.wait(.3)
 
                         spawn(function()
                             ReplicatedStorage.BackpackRemote:InvokeServer('Store', ToolName)
@@ -14570,96 +14639,6 @@ if Game_Name == "The Bronx" then
                 end})
 
                 DupingSection:label({wrapped = true, name = "This might bug if you have more than 1 of the item you're duping!"})
-
-                local AutoDuping = false
-                local Cooldown = false
-
-                local function duplicate_once()
-                    if Cooldown then return end
-                     Cooldown = true
-                     
-                      local Player = Players.LocalPlayer
-                        if not Player then Cooldown = false return end
-
-                         local Tool = Player.Character and Player.Character:FindFirstChildOfClass("Tool")
-                         if not Tool then
-                            library.notifications:create_notification({
-                                name = "Aethra",
-                                info = "Could not find a tool! you must hold one.",
-                                lifetime = 6
-                                })
-                                Cooldown = false
-                                return
-                            end
-
-                            pcall(function()
-                                if Player.Character and Player.Character:FindFirstChild("Humanoid") then
-                                    Player.Character.Humanoid:UnequipTools()
-                                end
-                            end)
-
-                            local ToolName = Tool.Name
-                            local ToolId
-
-                            local Connection
-                            Connection = ReplicatedStorage.MarketItems.ChildAdded:Connect(function(item)
-                                if item.name == ToolName then
-                                    local ok, owner == pcall(function() return item:WaitForChild("owner").Value end)
-                                    if ok and owner == player.name then
-                                        ToolId = item:GetAttribute("SpecialId")
-                                    end
-                                end
-                            end)
-
-                            pcall(function() ReplicatedStorage.ListWeaponRemote:FireServer(ToolName, 999999) end)
-                            task.wait(0.26)
-                            pcall(function() ReplicatedStorage.BackpackRemote:InvokeServer("Store", ToolName)
-
-                                local waited = 0
-                                while not ToolId and waited < 4 do
-                                    task.wait(0.2)
-                                    waited = waited + 0.2
-                                end
-
-                                if ToolId then
-                                    pcall(function() ReplicatedStorage.BuyItemRemote:FireServer(ToolName, Remove)
-                                    else
-                                        library.notifications:create_notification({
-                                            name = "Aethra"
-                                            info = "nigger be slow",
-                                            lifetime = 3
-                                        })
-                                    end
-
-                                    pcall(function() ReplicatedStorage.BackpackRemote.InvokeServer("Grab", ToolName) end)
-
-                                    if connection then
-                                        pcall(function() Connection.Disconnect() end)
-                                    end
-
-                                    task.wait(1)
-                                    Cooldown = false
-                                end
-
-                                DupingSection:toggle({
-                                    name = "AutoDupe",
-                                    callback = function()
-                                        AutoDuping = not AutoDuping
-                                        if AutoDuping then
-                                            library.notifications:create_notification({ name = Aethra, info = "Auto Duping On"
-                                            task.spawn(function()
-                                                while AutoDuping do
-                                                    if not Cooldown then
-                                                        duplicate_once()
-                                                    end
-                                                    task.wait(0.8)
-                                                end
-                                            end)
-                                        else
-                                            library.notifications:create_notification({ name = Aethra, info = "Auto Duping OFF"
-                                        end
-                                    end
-                               })                
 
                 local VulnerabilitySection = Column:section({name = "Vulnerability Section", size = 0.347, default = false, side = 'right', icon = GetImage("unlocked.png")}) 
 
@@ -14712,7 +14691,7 @@ if Game_Name == "The Bronx" then
                         return
                     end
 
-                    HideUI("buying products 🍉\nif you are stuck here, PLEASE WAIT!!")
+                    HideUI("buying products 🍉")
 
                     local OLDCFrame = LocalPlayer.Character.HumanoidRootPart.CFrame
 
@@ -14756,7 +14735,7 @@ if Game_Name == "The Bronx" then
 
                     DeleteSecretUI()
 
-                    HideUI("generating illegal cash 💷\n this takes around 1-2 minutes.\n please wait.")
+                    HideUI("generating illegal cash 💷\n please wait..")
 
                     Teleport(Stove.CookPart.CFrame, true)
 
