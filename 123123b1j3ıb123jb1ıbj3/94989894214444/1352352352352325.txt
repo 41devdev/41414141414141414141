@@ -14160,7 +14160,7 @@ if Game_Name == "The Bronx" then
                 end
 
                 LocalPlayerColumn = LocalPlayerTab:column({})
-                local CharacterModsSection = LocalPlayerColumn:section({name = "Character Modifications", side = "right", size = 0.450, icon = GetImage("Wrench.png")})
+                local CharacterModsSection = LocalPlayerColumn:section({name = "Character Modifications", side = "right", size = 0.400, icon = GetImage("Wrench.png")})
 
                 CharacterModsSection:toggle({type = "toggle", name = "Modify WalkSpeed", flag = "ModifyWalkSpeed_TheBronx", default = false, callback = function(state)
                     Config.MiscSettings.ModifySpeed.Enabled = state
@@ -14280,7 +14280,7 @@ if Game_Name == "The Bronx" then
                     Config.TheBronx.draww = state
                 end})                  
                 
-                BankSection:slider({name = "Cash Amount", flag = "MoneyAmount", min = 100, max = 10000, default = 10, suffix = "$", callback = function(state)
+                BankSection:slider({name = "Auto Drop Amount", flag = "MoneyAmount", min = 100, max = 10000, default = 10, suffix = "$", callback = function(state)
                     Config.TheBronx.MoneyAmount = state
                 end})
                 
@@ -14295,7 +14295,7 @@ if Game_Name == "The Bronx" then
 
                 local UISection = LocalPlayerColumn:section({name = "Toggle Interfaces Section", side = "right", size = 0.220, icon = GetImage("Settings.png")})
 
-                local _UINames, BlacklistedNames = {'ATM GUI'}, {"Dead", "Settings1", "Controls", "FirstShopGUI", "Freecam", "ThaShop2", "WATCH GUI", "NYPD Cars", "CONSTRUCTION LEVEL", "RobPlayerUI", "Bronx LOCKER", 'MobileBeam', 'Settings', 'Flash', 'Enter', 'CopSirens'}
+                local _UINames, BlacklistedNames = {'ATM GUI'}, {"Dead", "Settings1", "Controls", "FirstShopGUI", "ThaShop2", "WATCH GUI", "NYPD Cars", "CONSTRUCTION LEVEL", "RobPlayerUI", "Bronx LOCKER", 'MobileBeam', 'Settings', 'Flash', 'Enter'}
                 
                 for Index, Value in LocalPlayer.PlayerGui:GetChildren() do
                     if Value:IsA("ScreenGui") and not Value.Enabled then
@@ -14565,7 +14565,7 @@ if Game_Name == "The Bronx" then
 
                 Column = MiscTab:column({})
 
-                local DupingSection = Column:section({name = "Duping Section", size = 0.29, default = false, side = 'right', icon = GetImage("Node.png")}) 
+                local DupingSection = Column:section({name = "Duping Section", size = 0.34, default = false, side = 'right', icon = GetImage("Node.png")}) 
 
                 local Cooldown = false;
 
@@ -14614,13 +14614,13 @@ if Game_Name == "The Bronx" then
                             ReplicatedStorage.ListWeaponRemote:FireServer(ToolName, 999999)
                         end)
 
-                        task.wait(.3)
+                        task.wait(.27)
 
                         spawn(function()
                             ReplicatedStorage.BackpackRemote:InvokeServer('Store', ToolName)
                         end)
 
-                        task.wait(3)
+                        task.wait(2.7)
 
                         spawn(function()
                             ReplicatedStorage.BuyItemRemote:FireServer(ToolName, 'Remove', ToolId)
@@ -14638,6 +14638,69 @@ if Game_Name == "The Bronx" then
                     end)
                 end})
 
+                DupingSection:toggle({
+                    name = "Auto Dupe",
+                    callback = function(state)
+                        AutoDupe = state
+                        task.spawn(function()
+                            while AutoDupe do
+                                if not Cooldown then
+                                    Cooldown = true
+
+                                    local Player = Players.LocalPlayer
+                                    local Backpack = Player.Backpack
+
+                                    local Tool = Player.Character:FindFirstChildOfClass("Tool")
+
+                                    if not Tool then
+                                        library.notifications:create_notification({
+                                            name = "Aethra"
+                                            info = "Could Not Find A tool! You Must Hold One!"
+                                            lifetime = 10
+                                            })
+                                            Cooldown = false
+                                            return
+                                        end
+
+                                        Player.Character.Humanoid:UnequipTools()
+
+                                        local ToolName = Tool.Name
+                                        local ToolId
+
+                                        local Connection = ReplicatedStorage.MarketItems.ChildAdded:Connect(function(item)
+                                            if item.Name == Tool.Name then
+                                                if item:WaitForChild("owner").Value == Player.Name then
+                                                    ToolId = Item:GetAttribute("SpecialId")
+                                                end
+                                            end
+                                        end)
+                                        
+                                        spawn(function()
+                                            ReplicatedStorage.ListWeaponRemote:FireServer(ToolName, 999999)
+                                        end)
+
+                                        task.wait(0.27)
+
+                                        spawn(function()
+                                            ReplicatedStorage.BackpackRemote:InvokeServer("Store", ToolName)
+                                        end)
+
+                                        task.wait(0.27)
+
+                                        spawn(function()
+                                            ReplicatedStorage.BackpackRemote:InvokeServer("Grab", ToolName)
+                                        end)
+
+                                        Connection:Disconnect()
+                                        Cooldown = false
+                                    end
+
+                                    task.wait(4)
+                                end
+                            end)
+                        end
+                    })
+                                            
                 DupingSection:label({wrapped = true, name = "This might bug if you have more than 1 of the item you're duping!"})
 
                 local VulnerabilitySection = Column:section({name = "Vulnerability Section", size = 0.347, default = false, side = 'right', icon = GetImage("unlocked.png")}) 
