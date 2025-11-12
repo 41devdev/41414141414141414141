@@ -14638,68 +14638,89 @@ if Game_Name == "The Bronx" then
                     end)
                 end})
 
-                DupingSection:toggle({
-                    name = "Auto Dupe",
-                    callback = function(state)
-                        AutoDupe = state
-                        task.spawn(function()
-                            while AutoDupe do
-                                if not Cooldown then
-                                    Cooldown = true
+DupingSection:toggle({
+    name = "Auto Dupe",
+    callback = function(state)
+        AutoDupe = state
+        task.spawn(function()
+            local Player = game.Players.LocalPlayer
+            local ReplicatedStorage = game.ReplicatedStorage
 
-                                    local Player = Players.LocalPlayer
-                                    local Backpack = Player.Backpack
+            -- İlk tool'u bul ve kaydet
+            local FirstTool = nil
+            repeat
+                task.wait(0.5)
+                FirstTool = Player.Character and Player.Character:FindFirstChildOfClass("Tool")
+            until FirstTool or not AutoDupe
 
-                                    local Tool = Player.Character:FindFirstChildOfClass("Tool")
+            if not FirstTool then
+                library.notifications:create_notification({
+                    name = "Aethra",
+                    info = "No tool found in hand! Please equip one.",
+                    lifetime = 5
+                })
+                return
+            end
 
-                                    if not Tool then
-                                        library.notifications:create_notification({
-                                        name = "Aethra",
-                                        info = `Could not find a tool! you must hold one.`,
-                                        lifetime = 10
-                                    })
-                                            Cooldown = false
-                                            return
-                                        end
+            local ToolName = FirstTool.Name
 
-                                        Player.Character.Humanoid:UnequipTools()
+            library.notifications:create_notification({
+                name = "Aethra",
+                info = "Auto Dupe started for tool: " .. ToolName,
+                lifetime = 5
+            })
 
-                                        local ToolName = Tool.Name
-                                        local ToolId
+            while AutoDupe do
+                if not Cooldown then
+                    Cooldown = true
 
-                                        local Connection = ReplicatedStorage.MarketItems.ChildAdded:Connect(function(item)
-                                            if item.Name == Tool.Name then
-                                                if item:WaitForChild("owner").Value == Player.Name then
-                                                    ToolId = Item:GetAttribute("SpecialId")
-                                                end
-                                            end
-                                        end)
-                                        
-                                        spawn(function()
-                                            ReplicatedStorage.ListWeaponRemote:FireServer(ToolName, 999999)
-                                        end)
+                    local ToolId
 
-                                        task.wait(0.27)
-
-                                        spawn(function()
-                                            ReplicatedStorage.BackpackRemote:InvokeServer("Store", ToolName)
-                                        end)
-
-                                        task.wait(0.27)
-
-                                        spawn(function()
-                                            ReplicatedStorage.BackpackRemote:InvokeServer("Grab", ToolName)
-                                        end)
-
-                                        Connection:Disconnect()
-                                        Cooldown = false
-                                    end
-
-                                    task.wait(4)
-                                end
-                            end)
+                    local Connection = ReplicatedStorage.MarketItems.ChildAdded:Connect(function(item)
+                        if item.Name == ToolName then
+                            if item:WaitForChild("owner").Value == Player.Name then
+                                ToolId = item:GetAttribute("SpecialId")
+                            end
                         end
-                    })
+                    end)
+
+                    -- Dupe işlemleri
+                    pcall(function()
+                        ReplicatedStorage.ListWeaponRemote:FireServer(ToolName, 999999)
+                    end)
+
+                    task.wait(0.27)
+
+                    pcall(function()
+                        ReplicatedStorage.BackpackRemote:InvokeServer("Store", ToolName)
+                    end)
+
+                    task.wait(2.7)
+
+                    pcall(function()
+                        ReplicatedStorage.BuyItemRemote:FireServer(ToolName, "Remove", ToolId)
+                    end)
+
+                    pcall(function()
+                        ReplicatedStorage.BackpackRemote:InvokeServer("Grab", ToolName)
+                    end)
+
+                    Connection:Disconnect()
+                    Cooldown = false
+                end
+
+                -- Her 4 saniyede bir tekrar et
+                task.wait(4)
+            end
+
+            library.notifications:create_notification({
+                name = "Aethra",
+                info = "Auto Dupe stopped.",
+                lifetime = 5
+            })
+        end)
+    end
+})
                                             
                 DupingSection:label({wrapped = true, name = "This might bug if you have more than 1 of the item you're duping!"})
 
