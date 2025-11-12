@@ -14266,7 +14266,7 @@ if Game_Name == "The Bronx" then
                  end})
 
 
-                local BankSection = LocalPlayerColumn:section({name = "Bank Section", side = "right", size = 0.350, icon = GetImage("Settings.png")})
+                local BankSection = LocalPlayerColumn:section({name = "Bank Section", side = "right", size = 0.400, icon = GetImage("Settings.png")})
                 
                 BankSection:toggle({type = "toggle", name = "Auto Drop", flag = "AutoDrop", default = false, callback = function(state)
                     Config.TheBronx.AutoDrop = state
