@@ -404,7 +404,7 @@ local Config = {
 
         ["Fly"] = {
             ["Enabled"] = false;
-            ["hiz"] = 50;
+            ["hiz"] = 20;
         };
     };
 
@@ -4546,7 +4546,7 @@ do
                     elseif t == "Instance" then v:Destroy()
                     elseif t == "function" then task.spawn(v) end
                 end
-                flight_registry = {}
+                flight_registry = {E}
             end)
             
             local OnCharacter = LPH_NO_VIRTUALIZE(function(character: Model)
@@ -14162,6 +14162,10 @@ if Game_Name == "The Bronx" then
                 LocalPlayerColumn = LocalPlayerTab:column({})
                 local CharacterModsSection = LocalPlayerColumn:section({name = "Character Modifications", side = "right", size = 0.400, icon = GetImage("Wrench.png")})
 
+                CharacterModsSection:toggle({type = "toggle", name = "Fly", flag = "Fly", default = false, callback = function(state)
+                    Config.TheBronx.Fly = state
+                end})
+
                 CharacterModsSection:toggle({type = "toggle", name = "Modify WalkSpeed", flag = "ModifyWalkSpeed_TheBronx", default = false, callback = function(state)
                     Config.MiscSettings.ModifySpeed.Enabled = state
                 end})
@@ -14646,7 +14650,7 @@ DupingSection:toggle({
             local Player = game.Players.LocalPlayer
             local ReplicatedStorage = game.ReplicatedStorage
 
-            -- İlk tool'u bul ve kaydet
+            -- İlk tool'u bul ve kaydet,,
             local FirstTool = nil
             repeat
                 task.wait(0.5)
